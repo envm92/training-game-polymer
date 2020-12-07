@@ -1,0 +1,63 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="box-game">
+    <template>
+        <style>
+            :host {
+                --box-color: gray;
+            }
+            div {
+                background: var(--box-color);
+                align-items: center;
+                text-shadow: #000 0 0;
+                border-radius: 15px;
+                margin: 10px;
+                height: 60px;
+                width: 60px;
+            }
+        </style>
+        <div on-click="onClick"></div>
+    </template>
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class BoxGame extends Polymer.Element {
+            static get is() { return 'box-game'; }
+            static get properties() {
+                return {
+                    item: {
+                        type: Object,
+                        reflectToAttribute: true,
+                    }
+                };
+            }
+
+            onClick() {
+                if (!this.get('item.isOpen')) {
+                    this.set('item.isOpen', true);
+                    setTimeout(() => {
+                        this.item.open(this.get('item.isWinner'));
+                    }, 200);
+                }
+            }
+
+            static get observers() {
+                return [
+                    'itemChange(item.isOpen)'
+                ]
+            }
+
+            itemChange(isOpen) {
+                let color = 'grey';
+                if (isOpen) {
+                    color = (this.get('item.isWinner')) ? 'blue' : 'red';
+                }
+                this.updateStyles({'--box-color': color});
+            }
+        }
+
+        window.customElements.define(BoxGame.is, BoxGame);
+    </script>
+</dom-module>
