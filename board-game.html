@@ -19,7 +19,7 @@
         <paper-input  type="number" min="5" max="10000" value="{{boxCount}}"></paper-input>
         <score-game won="[[won]]" lost="[[lost]]"></score-game>
         <div>
-            <template is="dom-repeat" id="boxes-div" items="{{boxes}}">
+            <template is="dom-repeat" id="list" items="{{boxes}}">
                 <box-game is-winner="{{item.isWinner}}"></box-game>
             </template>
         </div>
@@ -109,16 +109,14 @@
             }
 
             _showAlert(msg) {
-                setTimeout(() => {
-                    alert(msg);
-                }, 500);
+                alert(msg);
+
             }
 
             _resetGame() {
                 this.set('boxes', []);
-                setTimeout(() => {
-                    this._initGame();
-                }, 500);
+                this.$.list.render();
+                this._initGame();
 
             }
 

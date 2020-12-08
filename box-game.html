@@ -42,7 +42,6 @@
             onClick() {
                 if (!this.get('isOpen')) {
                     this.set('isOpen', true);
-                    document.dispatchEvent(new CustomEvent('openBox', {detail: {isWinner: this.get('isWinner')}}));
                 }
             }
 
@@ -56,6 +55,10 @@
                 let color = 'grey';
                 if (isOpen) {
                     color = (this.get('isWinner')) ? 'blue' : 'red';
+                    setTimeout(() => {
+                        document.dispatchEvent(new CustomEvent('openBox', {detail: {isWinner: this.get('isWinner')}}));
+                    }, 200);
+
                 }
                 this.updateStyles({'--box-color': color});
             }
