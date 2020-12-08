@@ -1,136 +1,139 @@
-<link rel="import" href="../polymer/polymer-element.html">
-<link rel="import" href="../paper-input/paper-input.html">
-<link rel="import" href="./box-game.html">
-<link rel="import" href="./score-game.html">
+<link href="../polymer/polymer-element.html" rel="import">
+<link href="../paper-input/paper-input.html" rel="import">
+<link href="./box-game.html" rel="import">
+<link href="./score-game.html" rel="import">
 
 <dom-module id="board-game">
-    <template>
-        <style>
-            :host {
-                display: block;
-            }
-            div {
-                display: grid;
-                width: 100%;
-                height: auto;
-                grid: auto-flow / 1fr 1fr 1fr 1fr 1fr;
-            }
-        </style>
-        <paper-input  type="number" min="5" max="10000" value="{{boxCount}}"></paper-input>
-        <score-game won="[[won]]" lost="[[lost]]"></score-game>
-        <h3>Tries: [[tries]]</h3>
-        <div>
-            <template is="dom-repeat" id="list" items="{{boxes}}">
-                <box-game is-winner="{{item.isWinner}}"></box-game>
-            </template>
-        </div>
-    </template>
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
 
-    <script>
-        /**
-         * @customElement
-         * @polymer
-         */
-        class BoardGame extends Polymer.Element {
+      div {
+        display: grid;
+        width: 100%;
+        height: auto;
+        grid: auto-flow / 1fr 1fr 1fr 1fr 1fr;
+      }
+    </style>
+    <paper-input max="10000" min="5" type="number" value="{{boxCount}}"></paper-input>
+    <score-game lost="[[lost]]" won="[[won]]"></score-game>
+    <h3>Tries: [[tries]]</h3>
+    <div>
+      <template id="list" is="dom-repeat" items="{{boxes}}">
+        <box-game is-winner="{{item.isWinner}}"></box-game>
+      </template>
+    </div>
+  </template>
 
-            static get is() { return 'board-game'; }
-            static get properties() {
-                return {
-                    won: {
-                        type: Number,
-                        value: 0,
-                    },
-                    lost: {
-                        type: Number,
-                        value: 0,
-                    },
-                    boxCount :{
-                        type: Number,
-                        value: 5,
-                        reflectToAttribute: true,
-                        observer: '_updateBoxInput'
-                    },
-                    boxes : {
-                        type: Array,
-                        value: () => ([])
-                    },
-                    winner: Number,
-                    isWinner: {
-                        type:Boolean,
-                        default: false
-                    },
-                    tries: {
-                        type: Number,
-                        value: 0
-                    }
-                };
-            }
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class BoardGame extends Polymer.Element {
 
-            static get observers() {
-                return [
-                    '_endGame(tries, isWinner)'
-                ]
-            }
+      static get is() {
+        return 'board-game';
+      }
 
+      static get properties() {
+        return {
+          won: {
+            type: Number,
+            value: 0,
+          },
+          lost: {
+            type: Number,
+            value: 0,
+          },
+          boxCount: {
+            type: Number,
+            value: 5,
+            reflectToAttribute: true,
+            observer: '_updateBoxInput'
+          },
+          boxes: {
+            type: Array,
+            value: () => ([])
+          },
+          winner: Number,
+          isWinner: {
+            type: Boolean,
+            default: false
+          },
+          tries: {
+            type: Number,
+            value: 0
+          }
+        };
+      }
 
-            connectedCallback() {
-                super.connectedCallback();
-                this._initGame();
-                document.addEventListener('openBox', (e) => {
-                    this.set('isWinner', e.detail.isWinner);
-                    if (!e.detail.isWinner) {
-                        this.set('tries', this.get('tries') + 1);
-                    }
-                });
-            }
+      static get observers() {
+        return [
+          '_endGame(tries, isWinner)'
+        ]
+      }
 
-            _endGame(tries, isWinner) {
-                let isOver = (isWinner|| tries===3);
-                if (isOver) {
-                    this._showAlert((isWinner) ? 'You win!!' : 'Game over');
-                    this._updateScore(isWinner);
-                    this._resetGame();
-                }
-            }
+      connectedCallback() {
+        super.connectedCallback();
+        this._initGame();
+        document.addEventListener('openBox', (e) => {
+          this.set('isWinner', e.detail.isWinner);
+          if (!e.detail.isWinner) {
+            this.set('tries', this.get('tries') + 1);
+          }
+        });
+      }
 
-            _initGame() {
-                this.winner = Math.floor(Math.random() * Math.floor(this.boxCount));
-                this.set('boxes', Array.from({length:this.boxCount},(value, i) => {
-                    return {
-                        isOpen: false,
-                        isWinner: i === this.winner,
-                    }
-                }));
-            }
-
-            _updateBoxInput(newValue, oldValue){
-                if (newValue !== undefined) {
-                    this._resetGame();
-                }
-            }
-
-            _showAlert(msg) {
-                alert(msg);
-            }
-
-            _resetGame() {
-                this.isWinner = false;
-                this.tries = 0;
-                this.set('boxes', []);
-                this.$.list.render();
-                this._initGame();
-
-            }
-
-            _updateScore(win) {
-                if (win) {
-                    this.set('won', this.get('won') + 1);
-                } else {
-                    this.set('lost', this.get('lost') + 1);
-                }
-            }
+      _endGame(tries, isWinner) {
+        let isOver = (isWinner || tries === 3);
+        if (isOver) {
+          this._showAlert((isWinner) ? 'You win!!' : 'Game over');
+          this._updateScore(isWinner);
+          this._resetGame();
         }
+      }
 
-        window.customElements.define(BoardGame.is, BoardGame);
-    </script>
+      _initGame() {
+        this.winner = Math.floor(Math.random() * Math.floor(this.boxCount));
+        this.set('boxes', Array.from({length: this.boxCount}, (value, i) => {
+          return {
+            isOpen: false,
+            isWinner: i === this.winner,
+          }
+        }));
+      }
+
+      _updateBoxInput(newValue, oldValue) {
+        if (newValue !== undefined) {
+          this._resetGame();
+        }
+      }
+
+      _showAlert(msg) {
+        alert(msg);
+      }
+
+      _resetGame() {
+        this.isWinner = false;
+        this.tries = 0;
+        this.set('boxes', []);
+        this.$.list.render();
+        this._initGame();
+
+      }
+
+      _updateScore(win) {
+        if (win) {
+          this.set('won', this.get('won') + 1);
+        } else {
+          this.set('lost', this.get('lost') + 1);
+        }
+      }
+    }
+
+    window.customElements.define(BoardGame.is, BoardGame);
+  </script>
 </dom-module>

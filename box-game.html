@@ -1,68 +1,72 @@
 <link rel="import" href="../polymer/polymer-element.html">
 
 <dom-module id="box-game">
-    <template>
-        <style>
-            :host {
-                --box-color: gray;
-            }
-            div {
-                background: var(--box-color);
-                align-items: center;
-                text-shadow: #000 0 0;
-                border-radius: 15px;
-                margin: 10px;
-                height: 60px;
-                width: 60px;
-            }
-        </style>
-        <div on-click="onClick"></div>
-    </template>
-    <script>
-        /**
-         * @customElement
-         * @polymer
-         */
-        class BoxGame extends Polymer.Element {
-            static get is() { return 'box-game'; }
-            static get properties() {
-                return {
-                    isWinner : {
-                        type: Boolean,
-                        reflectToAttribute: true,
-                        default: false
-                    },
-                    isOpen: {
-                        type: Boolean,
-                        default: false
-                    }
-                };
-            }
+  <template>
+    <style>
+      :host {
+        --box-color: gray;
+      }
 
-            onClick() {
-                if (!this.get('isOpen')) {
-                    this.set('isOpen', true);
-                }
-            }
+      div {
+        background: var(--box-color);
+        align-items: center;
+        text-shadow: #000 0 0;
+        border-radius: 15px;
+        margin: 10px;
+        height: 60px;
+        width: 60px;
+      }
+    </style>
+    <div on-click="onClick"></div>
+  </template>
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class BoxGame extends Polymer.Element {
+      static get is() {
+        return 'box-game';
+      }
 
-            static get observers() {
-                return [
-                    'itemChange(isOpen)'
-                ]
-            }
+      static get properties() {
+        return {
+          isWinner: {
+            type: Boolean,
+            reflectToAttribute: true,
+            default: false
+          },
+          isOpen: {
+            type: Boolean,
+            default: false
+          }
+        };
+      }
 
-            itemChange(isOpen) {
-                let color = 'grey';
-                if (isOpen) {
-                    color = (this.get('isWinner')) ? 'blue' : 'red';
-                    setTimeout(() => {
-                        document.dispatchEvent(new CustomEvent('openBox', {detail: {isWinner: this.get('isWinner')}}));
-                    }, 200);
-                }
-                this.updateStyles({'--box-color': color});
-            }
+      onClick() {
+        if (!this.get('isOpen')) {
+          this.set('isOpen', true);
         }
+      }
 
-        window.customElements.define(BoxGame.is, BoxGame);
-    </script>
+      static get observers() {
+        return [
+          'itemChange(isOpen)'
+        ]
+      }
+
+      itemChange(isOpen) {
+        let color = 'grey';
+        if (isOpen) {
+          color = (this.get('isWinner')) ? 'blue' : 'red';
+          setTimeout(() => {
+            document.dispatchEvent(new CustomEvent('openBox', {detail: {isWinner: this.get('isWinner')}}));
+          }, 200);
+        }
+        this.updateStyles({'--box-color': color});
+      }
+    }
+
+    window.customElements.define(BoxGame.is, BoxGame);
+  </script>
 </dom-module>

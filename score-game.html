@@ -1,37 +1,40 @@
 <link rel="import" href="../polymer/polymer-element.html">
 
 <dom-module id="score-game">
-    <template>
-        <div>
-            <div>
-                <h2> Won: [[won]]</h2> |
-                <h2> Lost: [[lost]]</h2>
-            </div>
-        </div>
-    </template>
-    <script>
-        /**
-         * @customElement
-         * @polymer
-         */
-        class ScoreGame extends Polymer.Element {
-            static get is() { return 'score-game'; }
-            static get properties() {
-                return {
-                    won: {
-                        type: Number,
-                        value: 0,
-                        reflectToAttribute: true,
-                    },
-                    lost: {
-                        type: Number,
-                        value: 0,
-                        reflectToAttribute: true,
-                    }
-                };
-            }
-        }
+  <template>
+    <div>
+      <div>
+        <h2> Won: [[won]]</h2> |
+        <h2> Lost: [[lost]]</h2>
+      </div>
+    </div>
+  </template>
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class ScoreGame extends Polymer.Element {
+      static get is() {
+        return 'score-game';
+      }
 
-        window.customElements.define(ScoreGame.is, ScoreGame);
-    </script>
+      static get properties() {
+        return {
+          won: {
+            type: Number,
+            value: 0,
+            reflectToAttribute: true,
+          },
+          lost: {
+            type: Number,
+            value: 0,
+            reflectToAttribute: true,
+          }
+        };
+      }
+    }
+
+    window.customElements.define(ScoreGame.is, ScoreGame);
+  </script>
 </dom-module>
