@@ -58,7 +58,6 @@
                     setTimeout(() => {
                         document.dispatchEvent(new CustomEvent('openBox', {detail: {isWinner: this.get('isWinner')}}));
                     }, 200);
-
                 }
                 this.updateStyles({'--box-color': color});
             }
