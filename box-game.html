@@ -27,32 +27,35 @@
             static get is() { return 'box-game'; }
             static get properties() {
                 return {
-                    item: {
-                        type: Object,
+                    isWinner : {
+                        type: Boolean,
                         reflectToAttribute: true,
+                        default: false
+                    },
+                    isOpen: {
+                        type: Boolean,
+                        default: false
                     }
                 };
             }
 
             onClick() {
-                if (!this.get('item.isOpen')) {
-                    this.set('item.isOpen', true);
-                    setTimeout(() => {
-                        this.item.open(this.get('item.isWinner'));
-                    }, 200);
+                if (!this.get('isOpen')) {
+                    this.set('isOpen', true);
+                    document.dispatchEvent(new CustomEvent('openBox', {detail: {isWinner: this.get('isWinner')}}));
                 }
             }
 
             static get observers() {
                 return [
-                    'itemChange(item.isOpen)'
+                    'itemChange(isOpen)'
                 ]
             }
 
             itemChange(isOpen) {
                 let color = 'grey';
                 if (isOpen) {
-                    color = (this.get('item.isWinner')) ? 'blue' : 'red';
+                    color = (this.get('isWinner')) ? 'blue' : 'red';
                 }
                 this.updateStyles({'--box-color': color});
             }

@@ -20,7 +20,7 @@
         <score-game won="[[won]]" lost="[[lost]]"></score-game>
         <div>
             <template is="dom-repeat" id="boxes-div" items="{{boxes}}">
-                <box-game item="{{item}}"></box-game>
+                <box-game is-winner="{{item.isWinner}}"></box-game>
             </template>
         </div>
     </template>
@@ -31,8 +31,6 @@
          * @polymer
          */
         class BoardGame extends Polymer.Element {
-
-            count = 5;
 
             static get is() { return 'board-game'; }
             static get properties() {
@@ -56,59 +54,72 @@
                         value: () => ([])
                     },
                     winner: Number,
+                    isWinner: {
+                        type:Boolean,
+                        default: false
+                    },
                     plays: {
                         type: Number,
-                        value: 0,
+                        value: 0
                     }
                 };
             }
 
+            static get observers() {
+                return [
+                    '_endGame(plays, isWinner)'
+                ]
+            }
+
+
             connectedCallback() {
                 super.connectedCallback();
                 this._initGame();
+                document.addEventListener('openBox', (e) => {
+                    this.set('isWinner', e.detail.isWinner);
+                    this.set('plays', this.get('plays') + 1);
+                });
+            }
+
+            _endGame(plays, isWinner) {
+                let isOver = (isWinner|| plays===3);
+                if (isOver) {
+                    this._showAlert((isWinner) ? 'You win!!' : 'Game over');
+                    this._updateScore(isWinner);
+                    this._resetGame();
+                }
             }
 
             _initGame() {
                 this.winner = Math.floor(Math.random() * Math.floor(this.boxCount));
+                this.isWinner = false;
                 this.plays = 0;
-                this.set('boxes', Array.from({length:this.count},(value, i) => {
+                this.set('boxes', Array.from({length:this.boxCount},(value, i) => {
                     return {
                         isOpen: false,
                         isWinner: i === this.winner,
-                        open: (isWinner) => {
-                            this.plays++;
-                            if(isWinner) {
-                                this._showAlert('You win!!');
-                                this._updateScore(isWinner);
-                                this._resetGame();
-                            } else if(!isWinner && this.plays === 3) {
-                                this._showAlert('Game over');
-                                this._updateScore(isWinner);
-                                this._resetGame();
-                            }
-                        }
                     }
                 }));
             }
 
             _updateBoxInput(newValue, oldValue){
-                if (newValue !== undefined && oldValue != newValue) {
-
+                if (newValue !== undefined) {
                     this._resetGame();
                 }
             }
 
-            _clearBoard() {
-                this.set('boxes', []);
-            }
-
             _showAlert(msg) {
-                alert(msg);
+                setTimeout(() => {
+                    alert(msg);
+                }, 500);
             }
 
             _resetGame() {
-                this._clearBoard();
-                this._initGame();
+                this.set('boxes', []);
+                setTimeout(() => {
+                    this._initGame();
+                }, 500);
+
             }
 
             _updateScore(win) {
