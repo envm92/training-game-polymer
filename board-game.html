@@ -19,10 +19,10 @@
     </style>
     <paper-input max="10000" min="5" type="number" value="{{boxCount}}"></paper-input>
     <score-game lost="[[lost]]" won="[[won]]"></score-game>
-    <h3>Tries: [[tries]]</h3>
+    <h2>Tries: [[tries]]</h2>
     <div>
       <template id="list" is="dom-repeat" items="{{boxes}}">
-        <box-game is-winner="{{item.isWinner}}"></box-game>
+        <box-game is-winner="{{item.isWinner}}" is-open="{{item.isOpen}}" on-is-open-changed="boxIsOpen"></box-game>
       </template>
     </div>
   </template>
@@ -79,12 +79,12 @@
       connectedCallback() {
         super.connectedCallback();
         this._initGame();
-        document.addEventListener('openBox', (e) => {
+        /*document.addEventListener('openBox', (e) => {
           this.set('isWinner', e.detail.isWinner);
           if (!e.detail.isWinner) {
             this.set('tries', this.get('tries') + 1);
           }
-        });
+        });*/
       }
 
       _endGame(tries, isWinner) {
@@ -104,6 +104,15 @@
             isWinner: i === this.winner,
           }
         }));
+      }
+
+      boxIsOpen(e) {
+        if (e.detail.value) {
+          this.set('isWinner',e.model.item.isWinner);
+          if(!e.model.item.isWinner) {
+            this.set('tries', this.get('tries') + 1);
+          }
+        }
       }
 
       _updateBoxInput(newValue, oldValue) {

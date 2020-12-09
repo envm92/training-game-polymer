@@ -34,11 +34,13 @@
           isWinner: {
             type: Boolean,
             reflectToAttribute: true,
-            default: false
+            readOnly: true,
           },
           isOpen: {
             type: Boolean,
-            default: false
+            reflectToAttribute: true,
+            value: false,
+            notify: true
           }
         };
       }
@@ -59,9 +61,9 @@
         let color = 'grey';
         if (isOpen) {
           color = (this.get('isWinner')) ? 'blue' : 'red';
-          setTimeout(() => {
+          /*setTimeout(() => {
             document.dispatchEvent(new CustomEvent('openBox', {detail: {isWinner: this.get('isWinner')}}));
-          }, 200);
+          }, 200);*/
         }
         this.updateStyles({'--box-color': color});
       }
