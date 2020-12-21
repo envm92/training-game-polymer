@@ -108,9 +108,10 @@
 
       boxIsOpen(e) {
         if (e.detail.value) {
-          this.set('isWinner',e.model.item.isWinner);
           if(!e.model.item.isWinner) {
             this.set('tries', this.get('tries') + 1);
+          } else {
+            this.set('isWinner',e.model.item.isWinner);
           }
         }
       }

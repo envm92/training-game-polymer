@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>box-game test</title>
+
+    <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../box-game.html">
+  </head>
+  <body>
+
+    <test-fixture id="BasicTestFixture">
+      <template>
+        <box-game is-winner></box-game>
+      </template>
+    </test-fixture>
+
+    <test-fixture id="ChangedBoxCountTestFixture">
+      <template>
+        <box-game is-winner="false" is-open="false"></box-game>
+      </template>
+    </test-fixture>
+
+    <script>
+      suite('box-game', () => {
+
+        test('instantiating the element with default properties works', () => {
+          const element = fixture('BasicTestFixture');
+        });
+
+        test('setting boxCount on the element works', () => {
+          // Create a test fixture
+          const element = fixture('ChangedBoxCountTestFixture');
+          assert.equal(element.isWinner, false);
+        });
+
+      });
+    </script>
+
+  </body>
+</html>

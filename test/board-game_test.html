@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>board-game test</title>
+
+    <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../board-game.html">
+  </head>
+  <body>
+
+    <test-fixture id="BasicTestFixture">
+      <template>
+        <board-game></board-game>
+      </template>
+    </test-fixture>
+
+    <test-fixture id="ChangedBoxCountTestFixture">
+      <template>
+        <board-game box-count="10"></board-game>
+      </template>
+    </test-fixture>
+
+    <script>
+      suite('board-game', () => {
+
+        test('instantiating the element with default properties works', () => {
+          const element = fixture('BasicTestFixture');
+          assert.equal(element.boxCount, 5);
+          assert.equal(element.boxes.length, 5);
+          const elementShadowRoot = element.shadowRoot;
+          const elementHeader = elementShadowRoot.querySelector('h2');
+          assert.equal(elementHeader.innerHTML, 'Tries: 0');
+          assert.equal(element.won, 0);
+          assert.equal(element.lost, 0);
+          assert.equal(element.isWinner, false);
+          assert.equal(element.tries, 0);
+        });
+
+        test('setting boxCount on the element works', () => {
+          // Create a test fixture
+          const element = fixture('ChangedBoxCountTestFixture');
+          assert.equal(element.boxCount, 10);
+          assert.equal(element.boxes.length, 10);
+        });
+
+      });
+    </script>
+
+  </body>
+</html>

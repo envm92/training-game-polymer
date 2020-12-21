@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>score-game test</title>
+
+    <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../score-game.html">
+  </head>
+  <body>
+
+    <test-fixture id="BasicTestFixture">
+      <template>
+        <score-game></score-game>
+      </template>
+    </test-fixture>
+
+    <test-fixture id="ChangedScoresTestFixture">
+      <template>
+        <score-game lost="5" won="10"></score-game>
+      </template>
+    </test-fixture>
+
+    <script>
+      suite('score-game', () => {
+
+        test('instantiating the element with default properties works', () => {
+          const element = fixture('BasicTestFixture');
+          assert.equal(element.won, 0);
+          assert.equal(element.lost, 0);
+          const elementShadowRoot = element.shadowRoot;
+          const elementHeaders = elementShadowRoot.querySelectorAll('h2');
+          assert.equal(elementHeaders[0].innerHTML, 'Won: 0');
+          assert.equal(elementHeaders[1].innerHTML, 'Lost: 0');
+        });
+
+        test('setting lost and won on the element works', () => {
+          // Create a test fixture
+          const element = fixture('ChangedScoresTestFixture');
+          assert.equal(element.won, 10);
+          assert.equal(element.lost, 5);
+          const elementShadowRoot = element.shadowRoot;
+          const elementHeaders = elementShadowRoot.querySelectorAll('h2');
+          assert.equal(elementHeaders[0].innerHTML, 'Won: 10');
+          assert.equal(elementHeaders[1].innerHTML, 'Lost: 5');
+        });
+
+      });
+    </script>
+
+  </body>
+</html>
