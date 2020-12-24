@@ -17,12 +17,12 @@
         grid: auto-flow / 1fr 1fr 1fr 1fr 1fr;
       }
     </style>
-    <paper-input max="10000" min="5" type="number" value="{{boxCount}}"></paper-input>
-    <score-game lost="[[lost]]" won="[[won]]"></score-game>
+    <paper-input id="inputCount" max="10000" min="5" type="number" value="{{boxCount}}"></paper-input>
+    <score-game id="score" lost="[[lost]]" won="[[won]]"></score-game>
     <h2>Tries: [[tries]]</h2>
     <div>
       <template id="list" is="dom-repeat" items="{{boxes}}">
-        <box-game is-winner="{{item.isWinner}}" is-open="{{item.isOpen}}" on-is-open-changed="boxIsOpen"></box-game>
+        <box-game id={{index}} is-winner="{{item.isWinner}}" is-open="{{item.isOpen}}" on-is-open-changed="boxIsOpen"></box-game>
       </template>
     </div>
   </template>

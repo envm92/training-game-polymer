@@ -17,7 +17,7 @@
         width: 60px;
       }
     </style>
-    <div on-click="onClick"></div>
+    <div id="box" on-click="onClick"></div>
   </template>
   <script>
     /**
@@ -34,14 +34,17 @@
           isWinner: {
             type: Boolean,
             reflectToAttribute: true,
-            readOnly: true,
-            value: false
+            value: false,
           },
           isOpen: {
             type: Boolean,
             reflectToAttribute: true,
             value: false,
             notify: true
+          },
+          currentColor: {
+            type: String,
+            value: 'gray'
           }
         };
       }
@@ -59,14 +62,15 @@
       }
 
       itemChange(isOpen) {
-        let color = 'grey';
         if (isOpen) {
-          color = (this.get('isWinner')) ? 'blue' : 'red';
+           this.set('currentColor', this.get('isWinner') ? 'blue' : 'red');
           /*setTimeout(() => {
             document.dispatchEvent(new CustomEvent('openBox', {detail: {isWinner: this.get('isWinner')}}));
           }, 200);*/
+        } else {
+          this.set('currentColor', 'gray');
         }
-        this.updateStyles({'--box-color': color});
+        this.updateStyles({'--box-color': this.get('currentColor')});
       }
 
     }

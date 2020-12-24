@@ -28,6 +28,15 @@
     <script>
       suite('board-game', () => {
 
+        setup(function() {
+          replace('score-game').with('fake-score-game');
+          stub('board-game', {
+            _showAlert: (msg) => {
+              console.log(msg);
+            }
+          });
+        });
+
         test('instantiating the element with default properties works', () => {
           const element = fixture('BasicTestFixture');
           assert.equal(element.boxCount, 5);
@@ -42,10 +51,144 @@
         });
 
         test('setting boxCount on the element works', () => {
-          // Create a test fixture
           const element = fixture('ChangedBoxCountTestFixture');
           assert.equal(element.boxCount, 10);
           assert.equal(element.boxes.length, 10);
+        });
+
+        test('stub score-game on the element works', () => {
+          const element = fixture('ChangedBoxCountTestFixture');
+          assert.equal(element.$.score.lost, 0);
+          assert.equal(element.$.score.won, 0);
+        });
+
+        test('change value input and change boxCount', () => {
+          const element = fixture('ChangedBoxCountTestFixture');
+          assert.equal(element.$.inputCount.value, 10);
+          element.$.inputCount.updateValueAndPreserveCaret(5);
+          assert.equal(element.$.inputCount.value, 5);
+          assert.equal(element.boxes.length, 5);
+        });
+
+        test('_endGame 0 tries is not winner', () => {
+          const element = fixture('ChangedBoxCountTestFixture');
+          element._endGame(0, false);
+          assert.equal(element.boxes.length, 10);
+          assert.equal(element.tries, 0);
+          assert.equal(element.$.score.lost, 0);
+        });
+
+        test('_endGame 3 tries is not winner', () => {
+          const element = fixture('ChangedBoxCountTestFixture');
+          element._endGame(3, false);
+          assert.equal(element.boxes.length, 10);
+          assert.equal(element.tries, 0);
+          assert.equal(element.$.score.lost, 1);
+        });
+
+        test('_endGame 1 tries is winner', () => {
+          const element = fixture('ChangedBoxCountTestFixture');
+          element._endGame(1, true);
+          assert.equal(element.boxes.length, 10);
+          assert.equal(element.tries, 0);
+          assert.equal(element.$.score.won, 1);
+        });
+
+        test('_endGame 1 tries is winner', () => {
+          const element = fixture('ChangedBoxCountTestFixture');
+          element._endGame(1, true);
+          assert.equal(element.boxes.length, 10);
+          assert.equal(element.tries, 0);
+          assert.equal(element.$.score.won, 1);
+        });
+
+        test('_initGame set winner between 0 and 10, and create an array of 10 boxes', () => {
+          const element = fixture('ChangedBoxCountTestFixture');
+          element._initGame();
+          assert.equal(element.boxes.length, 10);
+          assert.equal(element.winner >= 0 && element.winner <=10 , true);
+          assert.equal(element.boxes[element.winner].isWinner , true);
+          element.boxes.forEach(element => {
+            assert.equal(element.isOpen , false);
+          });
+        });
+
+        test('boxIsOpen open looser box add one trie', () => {
+          const element = fixture('ChangedBoxCountTestFixture');
+          assert.equal(element.tries, 0);
+          element.boxIsOpen({
+            detail: {
+              value: true
+            },
+            model: {
+              item: {
+                isWinner: false
+              }
+            }
+          });
+          assert.equal(element.tries, 1);
+        });
+
+        test('boxIsOpen open looser box at 2 tries reset game', () => {
+          const element = fixture('ChangedBoxCountTestFixture');
+          element.tries = 2;
+          assert.equal(element.tries, 2);
+          element.boxIsOpen({
+            detail: {
+              value: true
+            },
+            model: {
+              item: {
+                isWinner: false
+              }
+            }
+          });
+          assert.equal(element.tries, 0);
+        });
+        
+        test('_updateBoxInput with undefined value doesn\'t reset the game', () => {
+          const element = fixture('BasicTestFixture');
+          element.tries = 1;
+          assert.equal(element.tries, 1);
+          element._updateBoxInput(undefined, undefined);
+          assert.equal(element.tries, 1);
+          assert.equal(element.boxCount, 5);
+          assert.equal(element.boxes.length, 5);
+        });
+
+        test('_updateBoxInput with 7 value reset the game with 7 boxes', () => {
+          const element = fixture('BasicTestFixture');
+          element.$.inputCount.updateValueAndPreserveCaret(7);
+          element._updateBoxInput(7, undefined);
+          assert.equal(element.tries, 0);
+          assert.equal(element.boxCount, 7);
+          assert.equal(element.boxes.length, 7);
+        });
+
+        test('_resetGame clear tries, isWinner, boxes', () => {
+          stub('board-game', {
+            _initGame: () => {
+              console.log('Do nothing');
+            }
+          });
+          const element = fixture('BasicTestFixture');
+          element._resetGame();
+          assert.equal(element.isWinner, false);
+          assert.equal(element.boxes.length, 0);
+          assert.equal(element.tries, 0);
+        });
+
+
+        test('_updateScore when is not winner', () => {
+          const element = fixture('ChangedBoxCountTestFixture');
+          element._updateScore(false);
+          assert.equal(element.$.score.lost, 1);
+        });
+
+        test('_updateScore when is winner', () => {
+          const element = fixture('ChangedBoxCountTestFixture');
+          element._updateScore(true);
+          assert.equal(element.$.score.won, 1);
         });
 
       });

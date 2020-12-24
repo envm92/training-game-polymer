@@ -36,7 +36,7 @@
           assert.equal(style.getPropertyValue('--box-color'), ' gray');
         });
 
-        /*test('setting winner false on the element works', (done) => {
+        test('setting winner true on the element works', (done) => {
           // Create a test fixture
           const element = fixture('ChangedOpenTestFixture');
           flush(() => {
@@ -45,28 +45,48 @@
             done();
           });
         });
-
-         test('itemChange change --box-color == blue when is wiinner', (done) => {
+         test('itemChange change to blue when is wiinner', (done) => {
           // Create a test fixture
           const element = fixture('ChangedOpenTestFixture');
-          element.itemChange(true);
+          assert.equal(element.isWinner, true);
           flush(() => {
-            const style = getComputedStyle(element);
-            assert.equal(style.getPropertyValue('--box-color'), ' blue');
+            element.itemChange(true);
+            assert.equal(element.currentColor, 'blue');
+            done();
+          });
+        });
+        test('itemChange change to red when is not wiinner', (done) => {
+          // Create a test fixture
+          const element = fixture('BasicTestFixture');
+          assert.equal(element.isWinner, false);
+          flush(() => {
+            element.itemChange(true);
+            assert.equal(element.currentColor, 'red');
             done();
           });
         });
 
-        test('itemChange change --box-color == red when is wiinner', (done) => {
+        test('isOpen change when is not open and when onClick is called', (done) => {
           // Create a test fixture
           const element = fixture('BasicTestFixture');
-          element.itemChange(true);
+          assert.equal(element.isOpen, false);
           flush(() => {
-            const style = getComputedStyle(element);
-            assert.equal(style.getPropertyValue('--box-color'), ' red');
+            element.onClick();
+            assert.equal(element.isOpen, true);
             done();
           });
-        });*/
+        });
+
+        test('isOpen change when is not open and when box is clicked', (done) => {
+          // Create a test fixture
+          const element = fixture('BasicTestFixture');
+          assert.equal(element.isOpen, false);
+          flush(() => {
+            element.$.box.click();
+            assert.equal(element.isOpen, true);
+            done();
+          });
+        });
 
       });
     </script>
