@@ -1,95 +1,91 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>box-game test</title>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
-    <script src="../../web-component-tester/browser.js"></script>
+  <title>box-game test</title>
 
-    <link rel="import" href="../box-game.html">
-  </head>
-  <body>
+  <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
 
-    <test-fixture id="BasicTestFixture">
-      <template>
-        <box-game></box-game>
-      </template>
-    </test-fixture>
+  <link rel="import" href="../box-game.html">
+</head>
 
-    <test-fixture id="ChangedOpenTestFixture">
-      <template>
-        <box-game is-winner="true"></box-game>
-      </template>
-    </test-fixture>
+<body>
 
-    <script>
-      suite('box-game', () => {
-        test('instantiating the element with default properties works', () => {
-          const element = fixture('BasicTestFixture');
-          assert.equal(element.isOpen, false);
-          assert.equal(element.isWinner, false);
-          const elementShadowRoot = element.shadowRoot;
-          const style = getComputedStyle(element);
-          assert.equal(style.getPropertyValue('--box-color'), ' gray');
-        });
+  <test-fixture id="BasicTestFixture">
+    <template>
+      <box-game></box-game>
+    </template>
+  </test-fixture>
 
-        test('setting winner true on the element works', (done) => {
-          // Create a test fixture
-          const element = fixture('ChangedOpenTestFixture');
-          flush(() => {
-            assert.equal(element.isOpen, false);
-            assert.equal(element.isWinner, true);
-            done();
-          });
-        });
-         test('itemChange change to blue when is wiinner', (done) => {
-          // Create a test fixture
-          const element = fixture('ChangedOpenTestFixture');
-          assert.equal(element.isWinner, true);
-          flush(() => {
-            element.itemChange(true);
-            assert.equal(element.currentColor, 'blue');
-            done();
-          });
-        });
-        test('itemChange change to red when is not wiinner', (done) => {
-          // Create a test fixture
-          const element = fixture('BasicTestFixture');
-          assert.equal(element.isWinner, false);
-          flush(() => {
-            element.itemChange(true);
-            assert.equal(element.currentColor, 'red');
-            done();
-          });
-        });
+  <test-fixture id="ChangedOpenTestFixture">
+    <template>
+      <box-game is-winner="true"></box-game>
+    </template>
+  </test-fixture>
 
-        test('isOpen change when is not open and when onClick is called', (done) => {
-          // Create a test fixture
-          const element = fixture('BasicTestFixture');
-          assert.equal(element.isOpen, false);
-          flush(() => {
-            element.onClick();
-            assert.equal(element.isOpen, true);
-            done();
-          });
-        });
-
-        test('isOpen change when is not open and when box is clicked', (done) => {
-          // Create a test fixture
-          const element = fixture('BasicTestFixture');
-          assert.equal(element.isOpen, false);
-          flush(() => {
-            element.$.box.click();
-            assert.equal(element.isOpen, true);
-            done();
-          });
-        });
-
+  <script>
+    suite('box-game', () => {
+      test('instantiating the element with default properties works', () => {
+        const element = fixture('BasicTestFixture');
+        assert.equal(element.isOpen, false);
+        assert.equal(element.isWinner, false);
+        const elementShadowRoot = element.shadowRoot;
+        const style = getComputedStyle(element);
+        assert.equal(style.getPropertyValue('--box-color'), ' gray');
       });
-    </script>
 
-  </body>
+      test('setting winner true on the element works', (done) => {
+        const element = fixture('ChangedOpenTestFixture');
+        flush(() => {
+          assert.equal(element.isOpen, false);
+          assert.equal(element.isWinner, true);
+          done();
+        });
+      });
+
+      test('itemChange change to blue when is wiinner', (done) => {
+        const element = fixture('ChangedOpenTestFixture');
+        assert.equal(element.isWinner, true);
+        flush(() => {
+          element.itemChange(true);
+          assert.equal(element.currentColor, 'blue');
+          done();
+        });
+      });
+      test('itemChange change to red when is not wiinner', (done) => {
+        const element = fixture('BasicTestFixture');
+        assert.equal(element.isWinner, false);
+        flush(() => {
+          element.itemChange(true);
+          assert.equal(element.currentColor, 'red');
+          done();
+        });
+      });
+
+      test('isOpen change when is not open and when onClick is called', (done) => {
+        const element = fixture('BasicTestFixture');
+        assert.equal(element.isOpen, false);
+        flush(() => {
+          element.onClick();
+          assert.equal(element.isOpen, true);
+          done();
+        });
+      });
+
+      test('updateStyles is called when itemChange is called', () => {
+        const element = fixture('BasicTestFixture');
+        const spy = sinon.spy(element, 'updateStyles');
+        element.itemChange(true);
+        assert.isTrue(spy.called);
+      });
+
+    });
+  </script>
+
+</body>
+
 </html>
